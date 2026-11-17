@@ -1,0 +1,230 @@
+<title>前端網頁設計課綱</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* 版面：規格書式的直角表格，單元以 2px 墨線起始，課號用等寬字當刻度 */
+  :root{
+    --bg:#fbfaf8; --surface:#ffffff; --tint:#f4f1ec; --ink:#12100e; --muted:#615c55;
+    --line:#d8d3cb; --brand:#c8452f; --brand-soft:#f3ddd8;
+    --p1:#e9e4dc; --p2:#f3ddd8; --p3:#e6b3a8; --p4:#c8452f; --p4-fg:#ffffff;
+    --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --bg:#141210; --surface:#1c1a17; --tint:#24211d; --ink:#efece5; --muted:#a8a199;
+    --line:#3a3530; --brand:#e0664f; --brand-soft:#3b2520;
+    --p1:#2e2a25; --p2:#3b2520; --p3:#6a3227; --p4:#e0664f; --p4-fg:#141210; color-scheme:dark}}
+  :root[data-theme="dark"]{
+    --bg:#141210; --surface:#1c1a17; --tint:#24211d; --ink:#efece5; --muted:#a8a199;
+    --line:#3a3530; --brand:#e0664f; --brand-soft:#3b2520;
+    --p1:#2e2a25; --p2:#3b2520; --p3:#6a3227; --p4:#e0664f; --p4-fg:#141210; color-scheme:dark}
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7}
+  .wrap{max-width:1100px;margin:0 auto;padding-block:56px 96px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{text-wrap:balance;margin:0}
+  code{font-family:var(--mono);font-size:.86em;background:var(--tint);padding:1px 5px}
+
+  /* 封面 */
+  .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--brand);
+    border-bottom:2px solid var(--brand);padding-bottom:3px;margin-bottom:18px}
+  h1{font-size:clamp(32px,6vw,48px);font-weight:900;line-height:1.25}
+  .lede{max-width:62ch;color:var(--muted);margin:16px 0 0}
+  .facts{display:flex;flex-wrap:wrap;gap:0;margin-top:32px;border-top:2px solid var(--ink)}
+  .fact{flex:1 1 140px;padding:14px 16px 14px 0}
+  .fact b{display:block;font-family:var(--mono);font-size:28px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
+  .fact span{font-size:13px;color:var(--muted)}
+
+  /* 時數比例尺 */
+  .scale{margin-top:40px}
+  .scale h2,.phases h2{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+  .bar{display:flex;border:1px solid var(--ink);overflow:hidden}
+  .seg{padding:10px 8px;min-width:0;border-right:1px solid var(--ink);background:var(--surface)}
+  .seg:last-child{border-right:0}
+  .seg:nth-child(odd){background:var(--tint)}
+  .seg b{display:block;font-family:var(--mono);font-size:13px}
+  .seg span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px}
+
+  /* AI 四階段 */
+  .phases{margin-top:40px}
+  .phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0;border:1px solid var(--line)}
+  .phase{padding:16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface)}
+  .phase h3{font-size:16px;font-weight:900;margin:8px 0 4px}
+  .phase .range{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .phase dl{margin:8px 0 0;font-size:13.5px}
+  .phase dt{font-weight:700;margin-top:6px}
+  .phase dd{margin:0;color:var(--muted)}
+  .chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;color:var(--ink);white-space:nowrap}
+  .ph1{background:var(--p1)} .ph2{background:var(--p2)} .ph3{background:var(--p3)} .ph4{background:var(--p4);color:var(--p4-fg)}
+  .note{font-size:13px;color:var(--muted);margin-top:10px}
+
+  /* 篩選 */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:56px 0 0}
+  .filters button{font:inherit;font-size:13px;font-weight:700;padding:6px 14px;background:transparent;color:var(--muted);
+    border:1px solid var(--line);cursor:pointer}
+  .filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .filters button:focus-visible,.toggle input:focus-visible+span{outline:2px solid var(--brand);outline-offset:2px}
+  .toggle{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer}
+  .toggle input{accent-color:var(--brand)}
+
+  /* 單元與課堂 */
+  .unit{margin-top:40px;border-top:2px solid var(--ink)}
+  .unit-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding:14px 0 10px}
+  .unit-head .no{font-family:var(--mono);font-size:13px;color:var(--brand);font-weight:700}
+  .unit-head h2{font-size:clamp(20px,3vw,26px);font-weight:900;line-height:1.3}
+  .unit-head .meta{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .lesson{display:grid;grid-template-columns:64px minmax(0,1.25fr) minmax(0,1fr);gap:8px 24px;padding:16px 0;border-top:1px solid var(--line)}
+  .lesson .code{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--brand)}
+  .lesson h3{font-size:17px;font-weight:900;line-height:1.4}
+  .lesson ul{margin:6px 0 0;padding-left:1.1em;color:var(--muted);font-size:14px}
+  .lesson .todo{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:6px}
+  .ai{font-size:14px;min-width:0}
+  .ai p{margin:6px 0 0}
+  .ai .done{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:var(--brand);border:1px solid var(--brand);padding:0 6px}
+  body.no-ai .ai{display:none}
+  body.no-ai .lesson{grid-template-columns:64px minmax(0,1fr)}
+
+  footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+  @media (max-width:720px){
+    .lesson,body.no-ai .lesson{grid-template-columns:48px minmax(0,1fr)}
+    .ai{grid-column:2}
+    .seg span{display:none}
+    .toggle{margin-left:0;width:100%}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">課程規劃｜HTML・CSS・JavaScript</span>
+    <h1>前端網頁設計課綱 - V1.0</h1>
+    <p class="lede">從零開始寫出語意正確的 HTML，到能還原設計稿、寫出互動元件，最後把自己的作品推上網路。每堂從起始檔的 TODO 動手做，做完再對照逐行註解的完成檔。全程分四個階段，逐步把 AI 帶進開發流程。</p>
+    <div class="facts">
+      <div class="fact"><b>84</b><span>總時數（小時）</span></div>
+      <div class="fact"><b>28</b><span>堂，每堂 3 小時</span></div>
+      <div class="fact"><b>6</b><span>個單元</span></div>
+      <div class="fact"><b>4</b><span>個 AI 使用階段</span></div>
+    </div>
+  </header>
+
+  <section class="scale" aria-label="各單元時數比例">
+    <h2>時數分配</h2>
+    <div class="bar">
+      <div class="seg" style="flex:6"><b>6h</b><span>HTML</span></div>
+      <div class="seg" style="flex:27"><b>27h</b><span>CSS 基礎與版面</span></div>
+      <div class="seg" style="flex:18"><b>18h</b><span>CSS 進階</span></div>
+      <div class="seg" style="flex:6"><b>6h</b><span>整合</span></div>
+      <div class="seg" style="flex:21"><b>21h</b><span>JavaScript</span></div>
+      <div class="seg" style="flex:6"><b>6h</b><span>專題</span></div>
+    </div>
+    <div class="ticks"><span>L01</span><span>L28</span></div>
+  </section>
+
+  <section class="phases">
+    <h2>AI 使用四階段</h2>
+    <div class="phase-grid">
+      <div class="phase"><span class="chip ph1">階段一</span><h3>解說員</h3><div class="range">L01–L11</div>
+        <dl><dt>可以</dt><dd>解釋觀念、解釋錯誤、回答「為什麼」</dd><dt>不可以</dt><dd>產生程式碼（關閉自動補全）</dd></dl></div>
+      <div class="phase"><span class="chip ph2">階段二</span><h3>助手</h3><div class="range">L12–L19</div>
+        <dl><dt>可以</dt><dd>產生程式碼草稿</dd><dt>不可以</dt><dd>交出說不出每一行在做什麼的程式碼</dd></dl></div>
+      <div class="phase"><span class="chip ph3">階段三</span><h3>除錯夥伴</h3><div class="range">L20–L26</div>
+        <dl><dt>可以</dt><dd>讀程式碼、指出錯在哪、出練習題</dd><dt>不可以</dt><dd>直接寫出 TODO 的解答</dd></dl></div>
+      <div class="phase"><span class="chip ph4">階段四</span><h3>協作者</h3><div class="range">L27–L28</div>
+        <dl><dt>可以</dt><dd>全部都可以</dd><dt>不可以</dt><dd>不附「AI 使用紀錄」就交專題</dd></dl></div>
+    </div>
+    <p class="note">各堂的 AI 運用為規劃內容；目前已完成教材的是 L16 講義。</p>
+  </section>
+
+  <div class="filters" role="group" aria-label="篩選單元">
+    <button type="button" data-f="all" aria-pressed="true">全部</button>
+    <button type="button" data-f="u1" aria-pressed="false">HTML</button>
+    <button type="button" data-f="u2" aria-pressed="false">CSS 基礎</button>
+    <button type="button" data-f="u3" aria-pressed="false">CSS 進階</button>
+    <button type="button" data-f="u4" aria-pressed="false">整合</button>
+    <button type="button" data-f="u5" aria-pressed="false">JavaScript</button>
+    <button type="button" data-f="u6" aria-pressed="false">專題</button>
+    <label class="toggle"><input type="checkbox" id="show-ai" checked><span>顯示 AI 運用</span></label>
+  </div>
+
+  <main id="units"></main>
+
+  <footer>每堂 3 小時。各堂資料夾含 README（課程內容連結）、start 起始檔（TODO 練習）與 index 完成檔（逐行註解）。</footer>
+</div>
+
+<script>
+const PH = {1:['ph1','階段一'],2:['ph2','階段二'],3:['ph3','階段三'],4:['ph4','階段四']};
+const UNITS = [
+  {id:'u1',no:'單元一',name:'HTML 結構',hours:6,lessons:[
+    ['L01','HTML 骨架與語意標籤',['HTML 標示「這段內容是什麼」，不決定它長什麼樣','文件四塊骨架：DOCTYPE／html／head／body','header、main、footer 各該放什麼'],6,1,'介紹 AI 工具、訂使用守則、關掉自動補全'],
+    ['L02','清單、表格、圖片、錨點、影音、地圖',['常用內容標籤一次認完','<code>alt</code> 描述的是圖片的功能','外部資源載入失敗時使用者看到什麼'],14,1,'請 AI 解釋標籤差異，再拿線上筆記驗證'],
+  ]},
+  {id:'u2',no:'單元二',name:'CSS 基礎與版面',hours:27,lessons:[
+    ['L03','盒模型（名片卡）',['第一次寫 CSS','content → padding → border → margin','<code>box-sizing: border-box</code> 為什麼幾乎一定要開'],4,1,'練習把「預期／實際」描述清楚再問'],
+    ['L04','字體排版與色彩',['把排版知識翻譯成 CSS 屬性','<code>px</code>／<code>em</code>／<code>rem</code> 的差別與選擇','色彩對比要過 WCAG AA'],10,1,'請 AI 解釋單位怎麼選'],
+    ['L05','fixed／absolute／sticky',['position 五個值分別相對於誰','<code>absolute</code> 一定要配 <code>relative</code> 父層','<code>sticky</code> 一定要配 <code>top</code>'],9,1,'描述錯誤現象，請 AI 解釋原因'],
+    ['L06','Flexbox 基礎：三種導覽列',['主軸與交叉軸','<code>justify-content</code> 與 <code>align-items</code> 各管哪個方向','水平垂直置中的三行寫法'],9,1,'描述錯誤現象，請 AI 解釋原因'],
+    ['L07','Flexbox 進階：等高卡片',['<code>flex:1</code> 讓卡片等高','<code>margin-top:auto</code> 讓按鈕貼底','<code>align-self</code> 處理單一項目的例外'],7,1,'描述錯誤現象，請 AI 解釋原因'],
+    ['L08','Grid 二維排版',['Grid 管二維，Flex 管一維','<code>repeat()</code>／<code>minmax()</code>／<code>fr</code>','12 欄系統是怎麼來的'],7,1,'描述錯誤現象，請 AI 解釋原因'],
+    ['L09','Mobile First 三斷點',['為什麼是 Mobile First','手機／768 平板／1024 桌機','用 DevTools 檢查沒有水平捲軸'],13,1,'請 AI 列出 RWD 檢查清單'],
+    ['L10','表單與可及性',['<code>label</code> 與 <code>input</code> 綁定（<code>for</code> ↔ <code>id</code>）','type 選對，手機鍵盤跟著變','<code>fieldset</code>／<code>legend</code> 分組'],12,1,'請 AI 做可及性檢查，再對照課程內容驗證'],
+    ['L11','UI 元件庫',['預設／hover／focus／active／disabled 五種狀態','偽類選擇器','<code>::before</code>／<code>::after</code> 做圖示與裝飾'],14,1,'請 AI 解釋偽類'],
+  ]},
+  {id:'u3',no:'單元三',name:'CSS 進階與設計還原',hours:18,lessons:[
+    ['L12','CSS 變數與 BEM',['<code>:root</code> 全域變數與區域變數','BEM：Block／Element／Modifier','CSS 怎麼拆檔'],10,2,'請 AI 取 BEM 名稱，再用本堂規則挑出命名錯誤'],
+    ['L13','transition／transform／keyframes',['<code>transition</code> 的四個值','<code>transform</code> 不觸發重排','<code>@keyframes</code> 多段動畫'],16,2,'AI 產生 keyframes，學生改參數並說明每個值'],
+    ['L14','純 CSS 互動元件',['<code>:checked</code> + 兄弟選擇器做開關、頁籤、手風琴','HTML 順序會限制 CSS 能做什麼','什麼時候該收手改用 JS'],14,2,'請 AI 比較純 CSS 與 JS 兩種做法'],
+    ['L15','<code>:has()</code>／<code>clamp()</code>／<code>scroll-snap</code>',['CSS 的父選擇器','字級自己伸縮，不用媒體查詢','分段滾動'],12,2,'請 AI 查瀏覽器支援度，再到 Can I use 驗證'],
+    ['L16','設計稿規格書與 1:1 還原',['從設計稿產出規格書：色票、字級、間距、斷點','照規格 1:1 還原','哪些設計稿上的東西網頁做不到或不該做'],11,2,'只給截圖讓 AI 還原，用規格書挑出至少 5 個錯；再把規格書也給 AI，比較兩輪結果',true],
+    ['L17','CSS 框架速成（Bootstrap）',['30 分鐘做完一頁後台','查官方文件 → 複製元件 → 換成自己的內容','只改幾個 CSS 變數，讓它不像 Bootstrap'],null,2,'AI 產生 Bootstrap 變數客製設定，對照講義的「規則三」'],
+  ]},
+  {id:'u4',no:'單元四',name:'整合實作與部署',hours:6,lessons:[
+    ['L18','完整版型：六個區塊',['用上前 17 堂做一頁 Landing Page','每個區塊自己判斷 Flex 或 Grid','標題階層與地標元素'],17,2,'AI 只產文案與假資料，版型自己做'],
+    ['L19','多頁作品集與部署',['多頁作品集網站','推上 GitHub Pages','檔名一律小寫，避免上線破圖'],'start.md',2,'AI 協助寫作品集介紹與部署步驟'],
+  ]},
+  {id:'u5',no:'單元五',name:'JavaScript 互動',hours:21,lessons:[
+    ['L20','JS 語法入門',['<code>let</code>／<code>const</code> 怎麼選','字串、數字、布林','樣板字面值'],6,3,'只能請 AI 解釋錯誤訊息'],
+    ['L21','判斷：猜數字',['if／else if／else 的順序影響結果','<code>===</code> 與 <code>==</code>','三元運算子與 <code>switch</code>'],6,3,'請 AI 出同類型的練習題'],
+    ['L22','函式：單位換算器',['參數與回傳值','函式呼叫函式','重複的邏輯收斂成函式'],10,3,'請 AI 出同類型的練習題'],
+    ['L23','DOM 操作',['<code>querySelector</code> 選元素','<code>textContent</code>／<code>classList</code>','改 class 和改 style 怎麼選'],5,3,'替 AI 寫的 DOM 程式碼逐行加中文註解'],
+    ['L24','事件與四大互動元件',['<code>addEventListener</code>','頁籤、手風琴、Modal、回到頂端','逐一綁定與共用函式'],5,3,'修一段故意有 bug 的 AI 輸出'],
+    ['L25','表單驗證與 localStorage',['<code>trim()</code>、長度檢查、錯誤訊息','localStorage 存草稿','用 <code>input</code> 事件邊打字邊存'],7,3,'AI 寫驗證規則，學生列測試案例去攻擊它'],
+    ['L26','Swiper 與 AOS',['讀一份沒看過的官方文件','引入、初始化、改設定、覆寫樣式','挑套件前的四個問題'],9,3,'比較 AI 與官方文件：AI 常給舊版寫法，以文件為準'],
+  ]},
+  {id:'u6',no:'單元六',name:'期末專題',hours:6,lessons:[
+    ['L27','專題起始樣板',['四支 CSS + 一支 JS 的樣板','理解每支檔案的分工','確定期末專題題目'],14,4,'全面使用 AI，專題附 <code>ai-log.md</code> 使用紀錄'],
+    ['L28','上線檢查清單',['跑完 25 項上線檢查','用 Lighthouse 看報告','課程結束後往哪走'],null,4,'AI 做 code review、解讀 Lighthouse，學生判斷哪些建議要採用'],
+  ]},
+];
+
+const root = document.getElementById('units');
+root.innerHTML = UNITS.map(u => {
+  const first = u.lessons[0][0], last = u.lessons[u.lessons.length-1][0];
+  const rows = u.lessons.map(([code,title,goals,todo,ph,ai,done]) => {
+    const todoTxt = todo == null ? '' : (typeof todo === 'number' ? `TODO ${todo} 個` : `練習說明：${todo}`);
+    return `<article class="lesson">
+      <div class="code">${code}</div>
+      <div><h3>${title}</h3><ul>${goals.map(g=>`<li>${g}</li>`).join('')}</ul>${todoTxt?`<div class="todo">${todoTxt}</div>`:''}</div>
+      <div class="ai"><span class="chip ${PH[ph][0]}">${PH[ph][1]}</span>${done?'<span class="done">已有講義</span>':''}<p>${ai}</p></div>
+    </article>`;
+  }).join('');
+  return `<section class="unit" data-u="${u.id}">
+    <div class="unit-head"><span class="no">${u.no}</span><h2>${u.name}</h2><span class="meta">${first}–${last}｜${u.lessons.length} 堂｜${u.hours} 小時</span></div>
+    ${rows}</section>`;
+}).join('');
+
+const btns = document.querySelectorAll('.filters button');
+function applyFilter(f){
+  btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
+  document.querySelectorAll('.unit').forEach(s => { s.hidden = !(f === 'all' || s.dataset.u === f); });
+}
+btns.forEach(b => b.addEventListener('click', () => applyFilter(b.dataset.f)));
+
+const aiBox = document.getElementById('show-ai');
+function applyAi(){ document.body.classList.toggle('no-ai', !aiBox.checked); try{ localStorage.setItem('showAi', aiBox.checked ? '1' : '0'); }catch(e){} }
+try{ if(localStorage.getItem('showAi') === '0') aiBox.checked = false; }catch(e){}
+aiBox.addEventListener('change', applyAi);
+applyAi();
+</script>
